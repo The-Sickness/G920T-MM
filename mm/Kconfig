@@ -623,3 +623,5 @@ config PROCESS_RECLAIM
 	 (addr, addr + size-bytes) of the process.
 
 	 Any other vaule is ignored.
+	  You can check speed with zsmalloc benchmark:
+	  https://github.com/spartacus06/zsmapbench
