@@ -490,4 +490,12 @@ static inline void __sync_cache_range_r(volatile void *p, size_t size)
 	: : : "r0","r1","r2","r3","r4","r5","r6","r7", \
 	      "r9","r10","lr","memory" )
 
+#ifdef CONFIG_FREE_PAGES_RDONLY
+#define mark_addr_rdonly(a)	set_memory_ro((unsigned long)a, 1);
+#define mark_addr_rdwrite(a)	set_memory_rw((unsigned long)a, 1);
+#else
+#define mark_addr_rdonly(a)
+#define mark_addr_rdwrite(a)
+#endif
+
 #endif
