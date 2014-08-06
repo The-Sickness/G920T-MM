@@ -151,6 +151,7 @@ struct zpool *zpool_create_pool(char *type, gfp_t gfp, struct zpool_ops *ops)
 
 	if (!driver) {
 		request_module("zpool-%s", type);
+		request_module(type);
 		driver = zpool_get_driver(type);
 	}
 
@@ -160,6 +161,7 @@ struct zpool *zpool_create_pool(char *type, gfp_t gfp, struct zpool_ops *ops)
 	}
 
 	zpool = kmalloc(sizeof(*zpool), GFP_KERNEL);
+	zpool = kmalloc(sizeof(*zpool), gfp);
 	if (!zpool) {
 		pr_err("couldn't create zpool - out of memory\n");
 		zpool_put_driver(driver);
