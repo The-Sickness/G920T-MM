@@ -271,6 +271,9 @@ static struct zs_ops zs_zpool_ops = {
 static void *zs_zpool_create(gfp_t gfp, struct zpool_ops *zpool_ops)
 {
 	return zs_create_pool(gfp, &zs_zpool_ops);
+static void *zs_zpool_create(gfp_t gfp, struct zpool_ops *zpool_ops)
+{
+	return zs_create_pool(gfp);
 }
 
 static void zs_zpool_destroy(void *pool)
@@ -306,6 +309,7 @@ static int zs_zpool_shrink(void *pool, unsigned int pages,
 	if (reclaimed)
 		*reclaimed = total;
 	return ret;
+	return -EINVAL;
 }
 
 static void *zs_zpool_map(void *pool, unsigned long handle,
@@ -336,6 +340,7 @@ static void zs_zpool_unmap(void *pool, unsigned long handle)
 static u64 zs_zpool_total_size(void *pool)
 {
 	return zs_get_total_pages(pool) << PAGE_SHIFT;
+	return zs_get_total_size_bytes(pool);
 }
 
 static struct zpool_driver zs_zpool_driver = {
