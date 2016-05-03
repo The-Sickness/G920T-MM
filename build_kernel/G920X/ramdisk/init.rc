@@ -1653,13 +1653,6 @@ on property:service.vpnclientd.enable=0
 	service reactived /system/bin/reactived
 	class late_start
 
-# launch SuperSU daemon
-service daemonsu /sbin/launch_daemonsu.sh
-    class late_start
-    user root
-    seclabel u:r:init:s0
-    oneshot
-
 # Call Post-init script
 service sickinit /sbin/sick.sh
     class main
