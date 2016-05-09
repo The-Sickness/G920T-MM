@@ -4,8 +4,8 @@ SUBLEVEL = 101
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
-#TOOLCHAIN_DIR = $(CURDIR)/toolchain/aarch64-linux-android-4.9-kernel/bin/aarch64-linux-android-
-TOOLCHAIN_DIR = /home/sick/aarch64-linux-android-4.9-kernel/bin/aarch64-linux-android-
+#TOOLCHAIN_DIR = $(CURDIR)/toolchain/aarch64-linux-android-5.3-kernel/bin/aarch64-linux-android-
+TOOLCHAIN_DIR = /home/sick/aarch64-linux-android-5.3-kernel/bin/aarch64-linux-android-
 
 ifdef CONFIG_WITH_CCACHE
 ccache := ccache
@@ -445,7 +445,19 @@ KBUILD_CFLAGS   := -DNDEBUG $(GRAPHITE) -w -Wstrict-prototypes -Wno-trigraphs \
 		   -std=gnu89 -Wno-discarded-array-qualifiers -Wno-logical-not-parentheses -Wno-array-bounds -Wno-switch -Wno-unused-variable \
 		   -march=armv8-a+crc -mtune=cortex-a57.cortex-a53
 else
-
+KBUILD_CFLAGS   := -DNDEBUG -w -Wstrict-prototypes -Wno-trigraphs \
+		   -fno-strict-aliasing -finline-functions -fno-common \
+		   -Werror-implicit-function-declaration -fno-pic \
+		   -Wno-format-security -ffast-math \
+		   -fno-delete-null-pointer-checks \
+		   -fdiagnostics-show-option \
+		   -pipe  -funswitch-loops -fpredictive-commoning -fgcse-after-reload \
+		   -ftree-loop-distribution -ftree-loop-if-convert -fivopts -fipa-pta -fira-hoist-pressure \
+		   -fmodulo-sched -fmodulo-sched-allow-regmoves \
+		   -fbranch-target-load-optimize -fsingle-precision-constant \
+		   -Werror -Wno-error=unused-variable -Wno-error=unused-function \
+		   -std=gnu89 -Wno-discarded-array-qualifiers -Wno-logical-not-parentheses -Wno-array-bounds -Wno-switch -Wno-unused-variable \
+		   -march=armv8-a+crc -mtune=cortex-a57.cortex-a53
 endif
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
