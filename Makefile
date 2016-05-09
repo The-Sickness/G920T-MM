@@ -395,11 +395,19 @@ endif
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   =
-AFLAGS_MODULE   =
-LDFLAGS_MODULE  =
-CFLAGS_KERNEL	=
-AFLAGS_KERNEL	=
+ifdef CONFIG_WITH_GRAPHITE
+CFLAGS_MODULE   = $(GRAPHITE) 
+AFLAGS_MODULE   = $(GRAPHITE) 
+LDFLAGS_MODULE  = $(GRAPHITE) 
+CFLAGS_KERNEL	= $(GRAPHITE) -fsingle-precision-constant
+AFLAGS_KERNEL	= $(GRAPHITE) 
+else
+CFLAGS_MODULE   = 
+AFLAGS_MODULE   = 
+LDFLAGS_MODULE  = 
+CFLAGS_KERNEL	= -fsingle-precision-constant
+AFLAGS_KERNEL	= 
+endif
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
@@ -438,14 +446,7 @@ KBUILD_CFLAGS   := -DNDEBUG $(GRAPHITE) -w -Wstrict-prototypes -Wno-trigraphs \
 		   -march=armv8-a+crc -mtune=cortex-a57.cortex-a53
 else
 
-KBUILD_CFLAGS   := -w -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks \
-		   -fdiagnostics-show-option -Werror \
-                   -march=armv8-a+crc \
-		   -mtune=cortex-a57.cortex-a53
+endif
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -454,7 +455,7 @@ KBUILD_CFLAGS_MODULE  := -DMODULE
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
-KERNELRELEASE = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)$(CONFIG_LOCALVERSION)
+KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
 KERNELVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
 
 export VERSION PATCHLEVEL SUBLEVEL KERNELRELEASE KERNELVERSION
