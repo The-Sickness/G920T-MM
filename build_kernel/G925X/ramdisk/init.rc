@@ -1653,22 +1653,6 @@ on property:service.vpnclientd.enable=0
 	service reactived /system/bin/reactived
 	class late_start
  
-# mount /data/su.img to /su
-on property:sukernel.mount=1
-    mount ext4 loop@/data/su.img /su noatime
-
-# launch SuperSU daemon
-service daemonsu /sbin/launch_daemonsu.sh
-    class late_start
-    user root
-    seclabel u:r:init:s0
-    oneshot
-
-# init AelKernel
-service aelinit /sbin/ael.sh
-    class main
-    user root
-    oneshot
 
 # init.d support enabler
 service sysinit /system/bin/logwrapper /system/xbin/busybox run-parts /system/etc/init.d

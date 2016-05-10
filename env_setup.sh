@@ -74,7 +74,7 @@ fi;
 
 # SM-G925X
 if [ "$TARGET" = "G925X" ] ; then
-	export KERNEL_CONFIG="exynos7420-zeroflte_tmo_defconfig";
+	export KERNEL_CONFIG="exynos7420-zerolte_tmo_defconfig";
 fi;
 
 # build script
