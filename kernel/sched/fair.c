@@ -2696,7 +2696,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
 	u64 remaining;
 
 	/* if the call-back is running a quota refresh is already occurring */
-	if (hrtimer_callback_running_relaxed(refresh_timer))
+	if (hrtimer_callback_running(refresh_timer))
 		return 1;
 
 	/* is a quota refresh about to occur? */
@@ -4585,9 +4585,6 @@ migrate_task_rq_fair(struct task_struct *p, int next_cpu)
 		se->avg.decay_count = -__synchronize_entity_decay(se);
 		atomic64_add(se->avg.load_avg_contrib, &cfs_rq->removed_load);
 	}
-
-	/* We have migrated, no longer consider this task hot */
-	se->exec_start = 0;
 }
 #endif
 #endif /* CONFIG_SMP */
@@ -5290,11 +5287,11 @@ static int tg_load_down(struct task_group *tg, void *data)
 	long cpu = (long)data;
 
 	if (!tg->parent) {
-		load = cpu_rq(cpu)->avg.load_avg_contrib;
+		load = cpu_rq(cpu)->load.weight;
 	} else {
 		load = tg->parent->cfs_rq[cpu]->h_load;
-		load = div64_ul(load * tg->se[cpu]->avg.load_avg_contrib,
-				tg->parent->cfs_rq[cpu]->runnable_load_avg + 1);
+		load *= tg->se[cpu]->load.weight;
+		load /= tg->parent->cfs_rq[cpu]->load.weight + 1;
 	}
 
 	tg->cfs_rq[cpu]->h_load = load;
@@ -5320,9 +5317,12 @@ static void update_h_load(long cpu)
 static unsigned long task_h_load(struct task_struct *p)
 {
 	struct cfs_rq *cfs_rq = task_cfs_rq(p);
+	unsigned long load;
 
-	return div64_ul(p->se.avg.load_avg_contrib * cfs_rq->h_load,
-			cfs_rq->runnable_load_avg + 1);
+	load = p->se.load.weight;
+	load = div_u64(load * cfs_rq->h_load, cfs_rq->load.weight + 1);
+
+	return load;
 }
 #else
 static inline void update_blocked_averages(int cpu)
@@ -5335,7 +5335,7 @@ static inline void update_h_load(long cpu)
 
 static unsigned long task_h_load(struct task_struct *p)
 {
-	return p->se.avg.load_avg_contrib;
+	return p->se.load.weight;
 }
 #endif
 
@@ -6077,7 +6077,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
 				     struct sched_group *group)
 {
 	struct rq *busiest = NULL, *rq;
-	unsigned long busiest_load = 0, busiest_power = 1;
+	unsigned long max_load = 0;
 	int i;
 
 	for_each_cpu(i, sched_group_cpus(group)) {
@@ -6107,15 +6107,11 @@ static struct rq *find_busiest_queue(struct lb_env *env,
 		 * the weighted_cpuload() scaled with the cpu power, so that
 		 * the load can be moved away from the cpu that is potentially
 		 * running at a lower capacity.
-		 *
-		 * Thus we're looking for max(wl_i / power_i), crosswise
-		 * multiplication to rid ourselves of the division works out
-		 * to: wl_i * power_j > wl_j * power_i;  where j is our
-		 * previous maximum.
 		 */
-		if (wl * busiest_power > busiest_load * power) {
-			busiest_load = wl;
-			busiest_power = power;
+		wl = (wl * SCHED_POWER_SCALE) / power;
+
+		if (wl > max_load) {
+			max_load = wl;
 			busiest = rq;
 		}
 	}
