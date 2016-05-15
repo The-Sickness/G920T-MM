@@ -100,7 +100,7 @@ echo "${bldcya}***** Compiling kernel *****${txtrst}"
 if [ $USER != "root" ]; then
 	make CONFIG_DEBUG_SECTION_MISMATCH=y -j10 Image ARCH=arm64
 else
-	make -j10 Image ARCH=arm64
+	make -j20 Image ARCH=arm64
 fi;
 
 if [ -e $KERNELDIR/arch/arm64/boot/Image ]; then
@@ -126,7 +126,7 @@ echo
 echo "${bldcya}***** Make ramdisk *****${txtrst}"
 
 # make modules
-make -j10 modules ARCH=arm64  || exit 1;
+make -j20 modules ARCH=arm64  || exit 1;
 
 # find modules
 for i in $(find "$KERNELDIR" -name '*.ko'); do
