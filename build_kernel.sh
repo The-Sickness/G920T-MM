@@ -98,7 +98,7 @@ echo
 echo "${bldcya}***** Compiling kernel *****${txtrst}"
 
 if [ $USER != "root" ]; then
-	make CONFIG_DEBUG_SECTION_MISMATCH=y -j10 Image ARCH=arm64
+	make CONFIG_DEBUG_SECTION_MISMATCH=y -j20 Image ARCH=arm64
 else
 	make -j20 Image ARCH=arm64
 fi;
