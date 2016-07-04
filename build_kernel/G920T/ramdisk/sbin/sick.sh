@@ -96,12 +96,12 @@ CPUFREQ24=2304000 #only A57 Cluster!
 
 # Make Kernel Data Path
 
-if [ ! -d /data/.maqical]; then
-	$BB mkdir -p /data/.maqical;
-	$BB chmod -R 0777 /.maqical/;
+if [ ! -d /data/.sickness ]; then
+	$BB mkdir -p /data/.sickness;
+	$BB chmod -R 0777 /.sickness/;
 else
-	$BB rm -rf /data/.maqical/*
-	$BB chmod -R 0777 /.maqical/;
+	$BB rm -rf /data/.sickness/*
+	$BB chmod -R 0777 /.sickness/;
 fi;
 
 #####################################################################
@@ -552,11 +552,11 @@ $BB chmod 06755 /system/xbin/busybox;
 #####################################################################
 # Kernel custom test
 
-if [ -e /data/.maqical/Kernel-test.log ]; then
-	rm /data/.maqical/Kernel-test.log;
+if [ -e /data/.sickness/Kernel-test.log ]; then
+	rm /data/.sickness/Kernel-test.log;
 fi;
-echo  Kernel script is working !!! >> /data/.maqical/Kernel-test.log;
-echo "excecuted on $(date +"%d-%m-%Y %r" )" >> /data/.maqical/Kernel-test.log;
+echo  Kernel script is working !!! >> /data/.sickness/Kernel-test.log;
+echo "excecuted on $(date +"%d-%m-%Y %r" )" >> /data/.sickness/Kernel-test.log;
 
 #####################################################################
 # Arizona earphone sound default (parametric equalizer preset values by AndreiLux)
@@ -571,7 +571,7 @@ echo "excecuted on $(date +"%d-%m-%Y %r" )" >> /data/.maqical/Kernel-test.log;
 # Run Cortexbrain script
 
 # Cortex parent should be ROOT/INIT and not Synapse
-#cortexbrain_background_process=$(cat /res/synapse/maqical/cortexbrain_background_process);
+#cortexbrain_background_process=$(cat /res/synapse/sickness/cortexbrain_background_process);
 #if [ "$cortexbrain_background_process" == "1" ]; then
 #	sleep 30
 #	$BB nohup $BB sh /sbin/cortexbrain-tune.sh > /dev/null 2>&1 &
