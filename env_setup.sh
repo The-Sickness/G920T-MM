@@ -67,13 +67,13 @@ export ARCH=arm64;
 export SUB_ARCH=arm64;
 
 # G920X
-if [ "$TARGET" = "G920X" ] ; then
+if [ "$TARGET" = "G920T" ] ; then
 	export KERNEL_CONFIG="custom_defconfig";
 fi;
 
 
 # SM-G925X
-if [ "$TARGET" = "G925X" ] ; then
+if [ "$TARGET" = "G925T" ] ; then
 	export KERNEL_CONFIG="exynos7420-zerolte_tmo_defconfig";
 fi;
 
@@ -83,7 +83,7 @@ export TMPFILE=`mktemp -t`;
 
 
 # system compiler
-export CROSS_COMPILE=/home/sick/aarch64-linux-android-6.0-kernel/binaarch64-linux-android-
+export CROSS_COMPILE=/home/sick/aarch64-7.0/bin/aarch64-
 
 
 # CPU Core
